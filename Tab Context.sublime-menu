@@ -1,0 +1,4 @@
+[
+	{ "caption": "-", "id": "tools" },
+	{ "command": "agent_ransack", "caption": "AgentRansack" }
+]

@@ -17,14 +17,30 @@ if sublime.platform() == "windows":
 
 class AgentRansackCommand(sublime_plugin.TextCommand):
 	def run(self, edit):
-		print 1
-		if len(self.view.file_name()) > 0:
+		d_param = ''
+
+		directories = []
+		for region in self.view.sel():
+			directory = self.view.substr(region)
+			if os.path.isdir(directory):
+				directories.append(os.path.realpath(directory))
+		d_param = ';'.join(directories)
+
+		if d_param == '' and len(self.view.file_name()) > 0:
+			d_param = os.path.dirname(os.path.realpath(self.view.file_name()))
+
+		if d_param != '':
 			cmd_line = ''
 			if sublime.platform() == "windows":
-				cmd_line = '%s -d "%s"' % (AgentRansack, os.path.dirname(os.path.realpath(self.view.file_name())))
+				cmd_line = '%s -d "%s"' % (AgentRansack, d_param)
 			print "AgentRansack command: " + cmd_line
 			Popen(cmd_line)
 
 
 	def is_enabled(self):
-		return sublime.platform() == "windows" and os.path.isfile(AgentRansack) and self.view.file_name() and len(self.view.file_name()) > 0
+		if not os.path.isfile(AgentRansack):
+			return false
+		is_enabled_file_name = self.view.file_name() and len(self.view.file_name()) > 0
+		non_empty_regions = [region for region in self.view.sel() if not region.empty()]
+		is_enabled_selection = len(non_empty_regions) > 0
+		return is_enabled_file_name or is_enabled_selection

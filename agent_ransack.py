@@ -4,9 +4,12 @@ from subprocess import Popen
 
 AgentRansack = ""
 if sublime.platform() == "windows":
-	import _winreg
+	try:
+	    import winreg
+	except ImportError:
+		import _winreg as winreg
 
-	AgentRansack =_winreg.QueryValue(_winreg.HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\AgentRansack.exe')
+	AgentRansack = winreg.QueryValue(winreg.HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\AgentRansack.exe')
 
 	if not AgentRansack:
 		if os.path.exists("%s\Mythicsoft\Agent Ransack\AgentRansack.exe" % os.environ['ProgramFiles(x86)']):
@@ -33,7 +36,7 @@ class AgentRansackCommand(sublime_plugin.TextCommand):
 			cmd_line = ''
 			if sublime.platform() == "windows":
 				cmd_line = '%s -d "%s"' % (AgentRansack, d_param)
-			print "AgentRansack command: " + cmd_line
+			print("AgentRansack command: " + cmd_line)
 			Popen(cmd_line)
 
 

@@ -42,7 +42,7 @@ class AgentRansackCommand(sublime_plugin.TextCommand):
 
 	def is_enabled(self):
 		if not os.path.isfile(AgentRansack):
-			return false
+			return False
 		is_enabled_file_name = self.view.file_name() and len(self.view.file_name()) > 0
 		non_empty_regions = [region for region in self.view.sel() if not region.empty()]
 		is_enabled_selection = len(non_empty_regions) > 0
